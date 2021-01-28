@@ -340,6 +340,11 @@ public final class RuntimeEnvironment {
         return syncReadConfiguration(Configuration::getDataRoot);
     }
 
+
+    public int getHistoryLimit() {
+        return syncReadConfiguration(Configuration::getHistoryLimit);
+    }
+
     /**
      * Get a file representing the index database.
      *

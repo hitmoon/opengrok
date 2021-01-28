@@ -134,6 +134,12 @@ public final class Configuration {
     /**
      * maximum number of messages in webapp.
      */
+
+    /**
+     * length of history size.
+     */
+    private int historyLimit;
+
     private int messageLimit;
     /**
      * Directory with authorization plug-ins. Default value is
@@ -555,6 +561,7 @@ public final class Configuration {
         setHistoryCache(true);
         setHistoryCacheTime(30);
         setHistoryEnabled(true);
+        setHistoryLimit(100);
         setHitsPerPage(25);
         setIgnoredNames(new IgnoredNames());
         setIncludedNames(new Filter());
@@ -796,6 +803,14 @@ public final class Configuration {
      */
     public void setHistoryEnabled(boolean flag) {
         this.historyEnabled = flag;
+    }
+
+    public void setHistoryLimit(int size) {
+        this.historyLimit = size;
+    }
+
+    public int getHistoryLimit() {
+        return historyLimit;
     }
 
     /**

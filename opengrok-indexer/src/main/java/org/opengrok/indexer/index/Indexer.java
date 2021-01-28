@@ -565,6 +565,10 @@ public final class Indexer {
 
             parser.on("-H", "--history", "Enable history.").execute(v -> cfg.setHistoryEnabled(true));
 
+            parser.on("-L", "=number", Integer.class,
+                "The repositories history limit. Default is 100.").execute(limit ->
+                    cfg.setHistoryLimit((Integer) limit));
+
             parser.on("--historyThreads", "=number", Integer.class,
                     "The number of threads to use for history cache generation on repository level. " +
                     "By default the number of threads will be set to the number of available CPUs.",
