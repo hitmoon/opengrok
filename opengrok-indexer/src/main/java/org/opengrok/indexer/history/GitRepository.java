@@ -145,6 +145,9 @@ public class GitRepository extends Repository {
 
         String filename = getRepoRelativePath(file);
 
+        String historyLimit = String.format("-%d",
+            RuntimeEnvironment.getInstance().getHistoryLimit());
+
         List<String> cmd = new ArrayList<>();
         ensureCommand(CMD_PROPERTY_KEY, CMD_FALLBACK);
         cmd.add(RepoCommand);
@@ -155,6 +158,7 @@ public class GitRepository extends Repository {
         cmd.add("--pretty=fuller");
         cmd.add(GIT_DATE_OPT);
         cmd.add("-m");
+        cmd.add(historyLimit);
 
         if (file.isFile() && isHandleRenamedFiles()) {
             cmd.add("--follow");
