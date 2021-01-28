@@ -1039,7 +1039,7 @@ public final class Indexer {
                     env.getRepositories().size()), "indexer.repository.scan");
         }
 
-        if (createHistoryCache) {
+        if (createHistoryCache && cfg.isHistoryEnabled()) {
             // Even if history is disabled globally, it can be enabled for some repositories.
             if (repositories != null && !repositories.isEmpty()) {
                 LOGGER.log(Level.INFO, "Generating history cache for repositories: " +
