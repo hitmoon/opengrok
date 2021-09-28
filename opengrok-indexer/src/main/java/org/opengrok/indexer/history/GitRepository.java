@@ -117,72 +117,6 @@ public class GitRepository extends RepositoryWithPerPartesHistory {
         return filePath.replace(File.separatorChar, '/');
     }
 
-    Executor getHistoryLogExecutor(final File file, String sinceRevision)
-            throws IOException {
-
-        String filename = getRepoRelativePath(file);
-
-        String historyLimit = String.format("-%d",
-            RuntimeEnvironment.getInstance().getHistoryLimit());
-
-        List<String> cmd = new ArrayList<>();
-        ensureCommand(CMD_PROPERTY_KEY, CMD_FALLBACK);
-        cmd.add(RepoCommand);
-        cmd.add("log");
-        cmd.add("--abbrev-commit");
-        cmd.add(ABBREV_LOG);
-        cmd.add("--name-only");
-        cmd.add("--pretty=fuller");
-        cmd.add(GIT_DATE_OPT);
-        cmd.add("-m");
-        cmd.add(historyLimit);
-
-        if (file.isFile() && isHandleRenamedFiles()) {
-            cmd.add("--follow");
-        }
-
-        if (sinceRevision != null) {
-            cmd.add(sinceRevision + "..");
-        }
-
-        if (filename.length() > 0) {
-            cmd.add("--");
-            cmd.add(filename);
-        }
-
-        return new Executor(cmd, new File(getDirectoryName()), sinceRevision != null);
-    }
-
-    Executor getRenamedFilesExecutor(final File file, String sinceRevision) throws IOException {
-        ensureCommand(CMD_PROPERTY_KEY, CMD_FALLBACK);
-        List<String> cmd = new ArrayList<>();
-        cmd.add(RepoCommand);
-        cmd.add("log");
-        cmd.add("--find-renames=8"); // similarity 80%
-        cmd.add("--diff-filter=R");
-        cmd.add("--summary");
-        cmd.add(ABBREV_LOG);
-        cmd.add("--name-status");
-        cmd.add("--oneline");
-
-        if (file.isFile()) {
-            cmd.add("--follow");
-        }
-
-        if (sinceRevision != null) {
-            cmd.add(sinceRevision + "..");
-        }
-
-        String canonicalPath = file.getCanonicalPath();
-        if (canonicalPath.length() > getCanonicalDirectoryName().length() + 1) {
-            // this is a file in the repository
-            cmd.add("--");
-            cmd.add(getPathRelativeToCanonicalRepositoryRoot(canonicalPath));
-        }
-
-        return new Executor(cmd, new File(getDirectoryName()), sinceRevision != null);
-    }
-
     /**
      * Try to get file contents for given revision.
      *
@@ -552,6 +486,10 @@ public class GitRepository extends RepositoryWithPerPartesHistory {
 
         if (numCommits != null && numCommits <= 0) {
             return null;
+        }
+
+        if (numCommits == null) {
+            numCommits = RuntimeEnvironment.getInstance().getHistoryLimit();
         }
 
         final List<HistoryEntry> entries = new ArrayList<>();
